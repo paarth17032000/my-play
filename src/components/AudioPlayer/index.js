@@ -6,6 +6,7 @@ import {
   FaBackward,
   FaVolumeUp,
 } from "react-icons/fa";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
 
 export default function AudioPlayer({
   songList,
@@ -111,6 +112,7 @@ export default function AudioPlayer({
   };
 
   const progressPercentage = (currentTime / duration) * 100;
+  const volumePercentage = (volume/1) *100
 
   return (
     <div className="flex flex-col items-center space-y-4 text-white w-full">
@@ -132,17 +134,8 @@ export default function AudioPlayer({
         </div>
       </div>
       <div className="flex items-center justify-between space-x-4 w-full">
-        <div className="flex items-center space-x-2">
-          <FaVolumeUp size={24} />
-          {/* <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="w-24"
-          /> */}
+        <div className="flex items-center bg-[#FFFFFF1A] rounded-full w-12 h-12 space-x-2 cursor-pointer">
+          <HiOutlineDotsHorizontal size={24} className="mx-auto" />
         </div>
         <div className="flex items-center gap-4">
           <button onClick={handlePrev} className="opacity-60 hover:opacity-100">
@@ -172,7 +165,10 @@ export default function AudioPlayer({
             step="0.01"
             value={volume}
             onChange={handleVolumeChange}
-            className="w-24"
+            className="custom-range w-12"
+            style={{
+              background: `linear-gradient(to right, #ffffff ${volumePercentage}%, rgba(255, 255, 255, 0.2) ${volumePercentage}%)`,
+            }}
           />
         </div>
       </div>

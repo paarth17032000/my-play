@@ -3,6 +3,7 @@ import PlayerLogo from "../../assets/player_logo.svg";
 import PlayerProfile from "../../assets/player_profile.png";
 import axios from "axios";
 import AudioPlayer from "../../components/AudioPlayer";
+import { FaSearch } from "react-icons/fa";
 
 const tabs = [
   { id: 1, type: "For You" },
@@ -52,17 +53,16 @@ export default function MusicPlayer() {
     setSelectedSong();
   };
   return (
-    <div className="min-h-screen bg-gradient-to-r from-black to-black relative text-white">
+    <div className="min-h-screen bg-gradient-to-r from-black to-black relative  transition-all duration-300 ease-in-out">
       <div
-        className="absolute inset-0"
         style={{
           background: `linear-gradient(108.18deg, ${
             selectedSong.accent ?? "#33425E"
           }99 2.46%, #00000099 99.84%)`,
         }}
       >
-        <div className="grid grid-cols-12 gap-8 p-8 ">
-          <div className="col-span-2 flex flex-col justify-between">
+        <div className="grid grid-cols-12 gap-8 p-8 lg:h-screen min-h-screen">
+          <div className="col-span-12 lg:col-span-2 flex flex-row lg:flex-col justify-between">
             <img src={PlayerLogo} alt="player_logo" width={133} height={40} />
             <img
               src={PlayerProfile}
@@ -73,9 +73,9 @@ export default function MusicPlayer() {
             />
           </div>
 
-          <div className="col-span-4 py-1.5 px-4">
-            {/* tabs */}
-            <div className="flex gap-4 text-[24px] font-[700] cursor-pointer">
+          <div className="hidden md:block md:col-span-6 lg:col-span-4 py-1.5 px-4 h-full">
+            {/* Tabs */}
+            <div className="flex gap-10 text-[24px] font-[700] cursor-pointer">
               {tabs.map((tab) => (
                 <div
                   key={tab.id}
@@ -90,19 +90,25 @@ export default function MusicPlayer() {
                 </div>
               ))}
             </div>
-            {/* search */}
-            <div>
+
+            {/* Search */}
+            <div className="flex items-center justify-between bg-[#FFFFFF14] w-[95%] rounded-[8px] py-2.5 px-4 mt-8">
               <input
+                id="search_input"
                 type="text"
                 name="search"
                 onChange={handleSearch}
                 value={searchVal}
-                placeholder="Search Song/Artist"
-                className="bg-[#FFFFFF14] w-full rounded-[8px] outline-none py-2.5 px-4 mt-8"
+                placeholder="Search Song/Artist ..."
+                className="bg-transparent outline-none text-[18px]"
               />
+              <FaSearch color="#FFFFFF50" />
             </div>
-            {/* list */}
-            <div className="my-6">
+
+            {/* Song List - Scrollable */}
+            <div className="my-6 scroll-container lg:h-[calc(100vh-250px)] px-2">
+              {" "}
+              {/* Dynamic height */}
               {songListForTabs.length > 0 &&
                 songListForTabs
                   .filter(
@@ -137,19 +143,19 @@ export default function MusicPlayer() {
                           </div>
                         </div>
                       </div>
-                      <div>4:12</div>
+                      {/* <div>4:12</div> */}
                     </div>
                   ))}
             </div>
           </div>
 
-          <div className="col-span-6 flex flex-col items-center mt-10">
+          <div className="col-span-12 md:col-span-6 flex flex-col items-center my-2 h-full overflow-hidden">
             {selectedSong.id && (
               <div className="">
-                <div className="text-[32px] font-[700] text-left">
+                <div className="text-white text-[32px] font-[700] text-left">
                   {selectedSong.name}
                 </div>
-                <div className="text-white/60 text-[16px] mt-2">
+                <div className="text-white/60 text-[16px]">
                   {selectedSong.artist}
                 </div>
                 <div className="my-6">
