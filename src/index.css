@@ -1,13 +1,87 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+* {
+  font-family: "Inter", sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.custom-range {
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+  outline: none;
+}
+
+/* Webkit Browsers (Chrome, Safari) */
+.custom-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2); /* Unplayed track color */
+  border-radius: 8px;
+}
+
+.custom-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff; /* Thumb color */
+  cursor: pointer;
+  margin-top: -5px; /* Center the thumb */
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Optional shadow for thumb */
+}
+
+/* Progress Bar: Apply a gradient background or solid color */
+.custom-range::before {
+  content: "";
+  position: absolute;
+  width: calc(var(--value, 0) * 1%);
+  height: 4px;
+  background: #ffffff; /* Progress bar color */
+  border-radius: 8px;
+}
+
+/* Firefox */
+.custom-range::-moz-range-track {
+  background: rgba(255, 255, 255, 0.2); /* Unplayed track color */
+  height: 4px;
+  border-radius: 8px;
+}
+
+.custom-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff; /* Thumb color */
+  cursor: pointer;
+}
+
+/* IE and Edge */
+.custom-range::-ms-track {
+  width: 100%;
+  height: 4px;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+.custom-range::-ms-fill-lower {
+  background: #ffffff; /* Progress bar color */
+}
+
+.custom-range::-ms-fill-upper {
+  background: rgba(255, 255, 255, 0.2); /* Unplayed track color */
+}
+
+.custom-range::-ms-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff; /* Thumb color */
+  cursor: pointer;
 }
