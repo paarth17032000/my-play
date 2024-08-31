@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
   FaPlay,
   FaPause,
@@ -37,9 +37,11 @@ export default function AudioPlayer({
     // Set event listeners
     const handleLoadedMetadata = () => setDuration(audio.duration);
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const handleSongEnd = () => handleNext(); // When song ends, go to next song
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleSongEnd);
 
     // Start playing the new song only after the metadata is loaded
     const playAudio = () => {
@@ -60,6 +62,7 @@ export default function AudioPlayer({
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("canplay", playAudio);
+      audio.removeEventListener("ended", handleSongEnd); 
 
       // Pause the audio to prevent overlap
       audio.pause();
@@ -113,8 +116,16 @@ export default function AudioPlayer({
   };
 
   // showing progress in range for audio seeker and volume
-  const progressPercentage = (currentTime / duration) * 100;
-  const volumePercentage = (volume / 1) * 100;
+  const progressPercentage = useMemo(() => (currentTime / duration) * 100, [currentTime, duration]);
+  const volumePercentage = useMemo(() => (volume / 1) * 100, [volume]);  
+
+  // const progressPercentage = useMemo(() => {
+  //   if(currentTime === duration) {
+  //     handleNext()
+  //   }
+  //   return (currentTime / duration) * 100;
+  // }, [currentTime])
+  // const volumePercentage = (volume / 1) * 100;
 
   return (
     <div>
