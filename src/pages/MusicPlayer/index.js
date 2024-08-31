@@ -3,7 +3,13 @@ import PlayerLogo from "../../assets/player_logo.svg";
 import PlayerProfile from "../../assets/player_profile.png";
 import axios from "axios";
 import AudioPlayer from "../../components/AudioPlayer";
-import { FaSearch } from "react-icons/fa";
+import { FaCross, FaSearch } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+import InputSearch from "../../components/InputSearch";
+import SongListComponent from "../../components/SongListComponent";
+import { MdMusicNote } from "react-icons/md";
+import SkeletonLoader from "../../components/SkeletonLoader";
+import SkeletonLoaderComponent from "../../components/SkeletonLoader";
 
 const tabs = [
   { id: 1, type: "For You" },
@@ -17,6 +23,7 @@ export default function MusicPlayer() {
   const [selectedSong, setSelectedSong] = useState({});
   const [searchVal, setSearchVal] = useState("");
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [showSongsList, setShowSongsList] = useState(false);
 
   useEffect(() => {
     async function fetchSongs() {
@@ -24,9 +31,13 @@ export default function MusicPlayer() {
         setLoading(true);
         const result = await axios.get("https://cms.samespace.com/items/songs");
         const data = result.data.data;
-        setSongs(data);
-        setSongListForTabs(data);
-        setLoading(false);
+        // added this to show loading state for extra 1.5secs 
+        setTimeout(() => {
+          setSongs(data);
+          setSongListForTabs(data);
+          setLoading(false);
+        }, 1500)
+        
       } catch (err) {
         console.error(err);
         setLoading(false);
@@ -49,8 +60,9 @@ export default function MusicPlayer() {
     setSearchVal(e.target.value.toLowerCase());
   };
 
-  const handleSongSelect = () => {
-    setSelectedSong();
+  const handleSongSelect = (song) => {
+    setSelectedSong(song);
+    setShowSongsList(false);
   };
   return (
     <div className="min-h-screen bg-gradient-to-r from-black to-black relative  transition-all duration-300 ease-in-out">
@@ -61,8 +73,8 @@ export default function MusicPlayer() {
           }99 2.46%, #00000099 99.84%)`,
         }}
       >
-        <div className="grid grid-cols-12 gap-8 p-8 lg:h-screen min-h-screen">
-          <div className="col-span-12 lg:col-span-2 flex flex-row lg:flex-col justify-between">
+        <div className="grid grid-cols-12 md:gap-8 gap-4 md:p-8 p-5 lg:h-screen min-h-screen">
+          <div className="col-span-12 lg:col-span-2 flex flex-row lg:flex-col justify-between md:h-auto h-[48px]">
             <img src={PlayerLogo} alt="player_logo" width={133} height={40} />
             <img
               src={PlayerProfile}
@@ -92,91 +104,113 @@ export default function MusicPlayer() {
             </div>
 
             {/* Search */}
-            <div className="flex items-center justify-between bg-[#FFFFFF14] w-[95%] rounded-[8px] py-2.5 px-4 mt-8">
-              <input
-                id="search_input"
-                type="text"
-                name="search"
-                onChange={handleSearch}
-                value={searchVal}
-                placeholder="Search Song/Artist ..."
-                className="bg-transparent outline-none text-[18px]"
-              />
-              <FaSearch color="#FFFFFF50" />
-            </div>
+            <InputSearch searchVal={searchVal} handleSearch={handleSearch} />
 
             {/* Song List - Scrollable */}
             <div className="my-6 scroll-container lg:h-[calc(100vh-250px)] px-2">
-              {" "}
               {/* Dynamic height */}
-              {songListForTabs.length > 0 &&
-                songListForTabs
-                  .filter(
-                    (song) =>
-                      song.name.toLowerCase().includes(searchVal) ||
-                      song.artist.toLowerCase().includes(searchVal)
-                  )
-                  .map((song) => (
-                    <div
-                      key={song.cover}
-                      onClick={() => setSelectedSong(song)}
-                      className={`flex items-center justify-between p-4 cursor-pointer rounded-[8px] my-1 ${
-                        selectedSong.id === song.id
-                          ? "bg-[#FFFFFF14]"
-                          : "hover:bg-[#FFFFFF07]"
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={`https://cms.samespace.com/assets/${song.cover}`}
-                          alt="song_cover"
-                          width={48}
-                          height={48}
-                          className="rounded-full h-12 w-12"
-                        />
-                        <div className="flex flex-col">
-                          <div className="text-white text-[18px]">
-                            {song.name}
-                          </div>
-                          <div className="text-white/60 text-[14px]">
-                            {song.artist}
-                          </div>
-                        </div>
-                      </div>
-                      {/* <div>4:12</div> */}
-                    </div>
-                  ))}
+              {loading ? (
+                <SkeletonLoaderComponent />
+              ) : (
+                <>
+                  {songListForTabs.length > 0 && (
+                    <SongListComponent
+                      searchVal={searchVal}
+                      songListForTabs={songListForTabs}
+                      selectedSong={selectedSong}
+                      handleSongSelect={handleSongSelect}
+                    />
+                  )}
+                </>
+              )}
             </div>
           </div>
 
-          <div className="col-span-12 md:col-span-6 flex flex-col items-center my-2 h-full overflow-hidden">
-            {selectedSong.id && (
-              <div className="">
-                <div className="text-white text-[32px] font-[700] text-left">
-                  {selectedSong.name}
-                </div>
-                <div className="text-white/60 text-[16px]">
-                  {selectedSong.artist}
-                </div>
-                <div className="my-6">
-                  <img
-                    src={`https://cms.samespace.com/assets/${selectedSong.cover}`}
-                    alt="song_cover"
-                    width={480}
-                    height={480}
-                    className="w-[400px] h-[400px] rounded-[8px]"
-                  />
-                </div>
+          <div className="col-span-12 md:col-span-6 flex flex-col items-center md:my-2 my-0 h-full overflow-hidden">
+            {selectedSong.id ? (
+              <div>
                 <AudioPlayer
                   songList={songs}
                   setSelectedSong={setSelectedSong}
                   selectedSong={selectedSong}
+                  setShowSongsList={setShowSongsList}
                 />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center md:h-full">
+                <div
+                  onClick={() => setShowSongsList(true)}
+                  className="md:cursor-not-allowed md:pointer-events-none cursor-pointer"
+                >
+                  <MdMusicNote className="text-white/70 w-[400px] h-[400px] rounded-[8px]" />
+                </div>
+                <div className="hidden md:block text-white/80 text-[32px] font-[700]">
+                  Select a song to play music
+                </div>
+                <div className="md:hidden block text-white/80 text-[32px] font-[700] text-center">
+                  Click music icon to open song menu
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* overlay for mobile screen */}
+      <div
+        className={`fixed top-0 right-0 h-screen w-full bg-black/90 bg-opacity-90 transform transition-transform duration-300 ease-in-out ${
+          showSongsList ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <button
+          onClick={() => setShowSongsList(false)}
+          className="absolute top-4 right-4 text-white text-xl"
+        >
+          <IoClose size={30} />
+        </button>
+
+        {/* Menu content */}
+        <div className="flex flex-col items-center justify-center h-full">
+          {/* <div className="py-1.5 px-4 h-full"> */}
+          {/* Tabs */}
+          <div className="flex gap-10 text-[24px] font-[700] cursor-pointer">
+            {tabs.map((tab) => (
+              <div
+                key={tab.id}
+                onClick={() => handleTabSwitch(tab)}
+                className={
+                  activeTab.id === tab.id
+                    ? "text-[#FFFFFF]"
+                    : "text-[#FFFFFF50]  hover:text-white"
+                }
+              >
+                {tab.type}
+              </div>
+            ))}
+          </div>
+
+          {/* Search */}
+          <div className="w-fit">
+            <InputSearch searchVal={searchVal} handleSearch={handleSearch} />
+          </div>
+
+          {/* Song List - Scrollable */}
+          <div className="my-6 scroll-container lg:h-[calc(100vh-250px)] px-2">
+            {/* Dynamic height */}
+            {songListForTabs.length > 0 && (
+              <SongListComponent
+                searchVal={searchVal}
+                songListForTabs={songListForTabs}
+                selectedSong={selectedSong}
+                handleSongSelect={handleSongSelect}
+              />
+            )}
+          </div>
+        </div>
+        {/* </div> */}
+      </div>
+      {/* {showSongsList && (
+      )} */}
     </div>
   );
 }
