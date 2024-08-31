@@ -14,6 +14,7 @@ function SkeletonLoader() {
   );
 }
 
+// skeleton loader for song list
 export default function SkeletonLoaderComponent() {
   return (
     <>

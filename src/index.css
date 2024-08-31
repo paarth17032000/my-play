@@ -2,16 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 * {
   font-family: "Inter", sans-serif;
 }
 
+/* input placeholder text color */
 #search_input::placeholder{
   color: #FFFFFF50;
 }
 
+/* custom scrollbar for songlist */
 .scroll-container {
   overflow-y: scroll; /* Enable scrolling */
   
@@ -39,6 +42,8 @@
   background: #555; /* Color of the draggable part on hover */
 }
 
+
+/* custom style for audio range inputs */
 .custom-range {
   appearance: none;
   height: 4px;

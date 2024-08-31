@@ -1,15 +1,13 @@
-import React, { act, useEffect, useMemo, useRef, useState } from "react";
-import PlayerLogo from "../../assets/player_logo.svg";
-import PlayerProfile from "../../assets/player_profile.png";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AudioPlayer from "../../components/AudioPlayer";
-import { FaCross, FaSearch } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
 import InputSearch from "../../components/InputSearch";
 import SongListComponent from "../../components/SongListComponent";
-import { MdMusicNote } from "react-icons/md";
-import SkeletonLoader from "../../components/SkeletonLoader";
 import SkeletonLoaderComponent from "../../components/SkeletonLoader";
+import PlayerProfile from "../../assets/player_profile.png";
+import PlayerLogo from "../../assets/player_logo.svg";
+import { IoClose } from "react-icons/io5";
+import { MdMusicNote } from "react-icons/md";
 
 const tabs = [
   { id: 1, type: "For You" },
@@ -17,15 +15,16 @@ const tabs = [
 ];
 
 export default function MusicPlayer() {
-  const [songs, setSongs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [songListForTabs, setSongListForTabs] = useState([]);
-  const [selectedSong, setSelectedSong] = useState({});
   const [searchVal, setSearchVal] = useState("");
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [loading, setLoading] = useState(false);
   const [showSongsList, setShowSongsList] = useState(false);
+  const [selectedSong, setSelectedSong] = useState({});
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [songs, setSongs] = useState([]);
+  const [songListForTabs, setSongListForTabs] = useState([]);
 
   useEffect(() => {
+    // fetching data and error handling
     async function fetchSongs() {
       try {
         setLoading(true);
@@ -64,8 +63,10 @@ export default function MusicPlayer() {
     setSelectedSong(song);
     setShowSongsList(false);
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-black to-black relative  transition-all duration-300 ease-in-out">
+      {/* dynamically set Bg color */}
       <div
         style={{
           background: `linear-gradient(108.18deg, ${
@@ -73,18 +74,20 @@ export default function MusicPlayer() {
           }99 2.46%, #00000099 99.84%)`,
         }}
       >
+        {/* sidebar at desktop view and navbar at mobile view */}
         <div className="grid grid-cols-12 md:gap-8 gap-4 md:p-8 p-5 lg:h-screen min-h-screen">
           <div className="col-span-12 lg:col-span-2 flex flex-row lg:flex-col justify-between md:h-auto h-[48px]">
             <img src={PlayerLogo} alt="player_logo" width={133} height={40} />
             <img
               src={PlayerProfile}
               alt="player_profile"
-              className="border-2 border-white/60 rounded-full"
+              className="border-2 border-white/60 rounded-full h-12 w-12"
               width={48}
               height={48}
             />
           </div>
 
+          {/* song list section comprise of Tabs, Search and SongsList */}
           <div className="hidden md:block md:col-span-6 lg:col-span-4 py-1.5 px-4 h-full">
             {/* Tabs */}
             <div className="flex gap-10 text-[24px] font-[700] cursor-pointer">
@@ -108,7 +111,7 @@ export default function MusicPlayer() {
 
             {/* Song List - Scrollable */}
             <div className="my-6 scroll-container lg:h-[calc(100vh-250px)] px-2">
-              {/* Dynamic height */}
+              {/* loader for songlists */}
               {loading ? (
                 <SkeletonLoaderComponent />
               ) : (
@@ -129,6 +132,7 @@ export default function MusicPlayer() {
           <div className="col-span-12 md:col-span-6 flex flex-col items-center md:my-2 my-0 h-full overflow-hidden">
             {selectedSong.id ? (
               <div>
+                {/* handling all audio relation stuff here */}
                 <AudioPlayer
                   songList={songs}
                   setSelectedSong={setSelectedSong}
@@ -137,6 +141,7 @@ export default function MusicPlayer() {
                 />
               </div>
             ) : (
+              // placeholder for time when no song is selected
               <div className="flex flex-col items-center justify-center md:h-full">
                 <div
                   onClick={() => setShowSongsList(true)}
@@ -169,9 +174,8 @@ export default function MusicPlayer() {
           <IoClose size={30} />
         </button>
 
-        {/* Menu content */}
+        {/* Menu content for mbile view */}
         <div className="flex flex-col items-center justify-center h-full">
-          {/* <div className="py-1.5 px-4 h-full"> */}
           {/* Tabs */}
           <div className="flex gap-10 text-[24px] font-[700] cursor-pointer">
             {tabs.map((tab) => (
@@ -196,7 +200,6 @@ export default function MusicPlayer() {
 
           {/* Song List - Scrollable */}
           <div className="my-6 scroll-container lg:h-[calc(100vh-250px)] px-2">
-            {/* Dynamic height */}
             {songListForTabs.length > 0 && (
               <SongListComponent
                 searchVal={searchVal}
@@ -207,10 +210,7 @@ export default function MusicPlayer() {
             )}
           </div>
         </div>
-        {/* </div> */}
       </div>
-      {/* {showSongsList && (
-      )} */}
     </div>
   );
 }

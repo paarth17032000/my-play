@@ -112,11 +112,13 @@ export default function AudioPlayer({
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  // showing progress in range for audio seeker and volume
   const progressPercentage = (currentTime / duration) * 100;
   const volumePercentage = (volume / 1) * 100;
 
   return (
     <div>
+      {/* title and cover for song */}
       <div className="text-white text-[32px] font-[700] text-left">
         {selectedSong.name}
       </div>
@@ -131,7 +133,9 @@ export default function AudioPlayer({
         />
       </div>
 
+      {/* audio controls */}
       <div className="flex flex-col items-center space-y-4 text-white w-full">
+        {/* audio slider and timer */}
         <div className="w-full">
           <input
             type="range"
@@ -149,13 +153,17 @@ export default function AudioPlayer({
             <span>{formatTime(duration)}</span>
           </div>
         </div>
+        {/* aduio control buttons */}
         <div className="flex items-center justify-between space-x-4 w-full">
+          {/* menu hidden & will be seen in mobile view  */}
           <div
             onClick={() => setShowSongsList(true)}
             className="md:invisible visible flex items-center bg-[#FFFFFF1A] hover:bg-[#FFFFFF30] rounded-full w-12 h-12 space-x-2 cursor-pointer"
           >
             <HiOutlineDotsHorizontal size={24} className="mx-auto" />
           </div>
+
+          {/* play/pause/next/prev */}
           <div className="flex items-center gap-4">
             <button
               onClick={handlePrev}
@@ -181,6 +189,7 @@ export default function AudioPlayer({
             </button>
           </div>
 
+          {/* volume */}
           <div className="flex items-center space-x-2">
             <FaVolumeUp size={24} />
             <input

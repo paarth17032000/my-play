@@ -9,11 +9,13 @@ export default function SongListComponent({
   return (
     <div className="grid md:grid-cols-1 grid-cols-2 md:gap-0 gap-5">
       {songListForTabs
+        // filter based on searchValue      
         .filter(
           (song) =>
             song.name.toLowerCase().includes(searchVal) ||
             song.artist.toLowerCase().includes(searchVal)
         )
+        // mapping the song elements
         .map((song) => (
           <div
             key={song.cover}
@@ -37,7 +39,6 @@ export default function SongListComponent({
                 <div className="text-white/60 text-[14px]">{song.artist}</div>
               </div>
             </div>
-            {/* <div>4:12</div> */}
           </div>
         ))}
     </div>
